@@ -48,7 +48,7 @@ if missing_cols:
 
 # ✅ 入力UI
 st.markdown("### 🔍 曜日と時間帯を選択してください")
-weekday = st.selectbox("曜日を選んでください", df["曜日"].unique())
+weekday = st.selectbox("曜日を選んでください", df["曜日"].unique(), index=df["曜日"].unique().tolist().index("月"))
 hour = st.slider("時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
 
 # ✅ クラスター情報の定義
