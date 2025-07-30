@@ -108,10 +108,17 @@ if not match.empty:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
     # ✅ 同じクラスタの他時間帯表示
-    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"] == weekday) & (df["開始時"] == hour))]
-    if not others.empty:
-        st.markdown("📍 同じクラスターの他の時間帯：")
-        for _, row in others.iterrows():
-            st.markdown(f"- {row['曜日']} {row['開始時']}時台")
+# ✅ 同じクラスタの他時間帯表示（月曜始まりでソート）
+weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
+df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
+
+others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"] == weekday) & (df["開始時"] == hour))]
+
+if not others.empty:
+    st.markdown("📍 同じクラスターの他の時間帯（曜日順）：")
+    others_sorted = others.sort_values(by=["曜日", "開始時"])
+    for _, row in others_sorted.iterrows():
+        st.markdown(f"- {row['曜日']} {row['開始時']}時台")
+
 else:
     st.warning("⚠️ 該当するクラスタが見つかりませんでした。")
