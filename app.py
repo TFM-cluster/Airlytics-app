@@ -48,11 +48,11 @@ st.image(logo, use_container_width=True)
 st.markdown(
     """
     <div style='text-align: center; font-family: Meiryo, sans-serif;
-                font-size: 11pt; margin-top: -5px; margin-bottom: 20px; line-height: 1.6; color: #333;'>
+                font-size: 10pt; margin-top: -5px; margin-bottom: 20px; line-height: 1.6; color: #333;'>
         AIrlyticsは、ラジオの聴取行動を可視化し、<br>
         クラスタごとの特徴を分析するインサイトツールです。<br>
-        2024年度の聴取率調査（2024年4月～2025年2月の計6回）を基に7つのクラスタを作成し、<br>
-        結果を聴取時間に落とし込みました。<br>
+        2024年度の聴取率調査結果（2024年4月～2025年2月の計6回）を基に7つのクラスタを作成し、<br>
+        聴取時間に落とし込みました。<br>
         クラスタ作成に使用した変数は、性別、年齢、職業、エリア、ドライバー比率、聴取時間です。
     </div>
     """,
