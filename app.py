@@ -25,7 +25,7 @@ st.image(tfm_logo, width=100)
 st.markdown(
     """
     <div style='text-align: center; color: #3399cc; font-family: Meiryo, sans-serif;
-                font-size: 20pt; font-weight: bold; margin-top: 10px; margin-bottom: -5px;'>
+                font-size: 21pt; font-weight: bold; margin-top: 10px; margin-bottom: -5px;'>
         ラジオの空気を可視化する、エアリティクス
     </div>
     """,
