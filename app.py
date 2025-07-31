@@ -10,6 +10,11 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# ← このすぐ下に追加！
+st.markdown("""
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+""", unsafe_allow_html=True)
+
 # ✅ CSS（フォント拡大＋背景色など）
 st.markdown("""
     <style>
