@@ -10,24 +10,11 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# ← このすぐ下に追加！
+# ✅ スマホでピンチズームを許可する（viewportメタタグを上書き）
 st.markdown("""
+    <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-""", unsafe_allow_html=True)
-
-# ✅ CSS（フォント拡大＋背景色など）
-st.markdown("""
-    <style>
-    html, body, [class*="css"]  {
-        font-size: 12px !important;
-        background-color: #f9f9f9;
-        min-height: 2000px;
-    }
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-    }
-    </style>
+    </head>
 """, unsafe_allow_html=True)
 
 # ✅ TOKYO FM ロゴの表示
