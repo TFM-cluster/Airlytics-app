@@ -10,22 +10,22 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# ✅ キャッチコピーを先に表示
+st.markdown(
+    """
+    <div style='text-align: center; color: #3399cc; font-family: Meiryo, sans-serif; font-size: 20pt; margin-top: 10px; margin-bottom: -10px;'>
+        ラジオの空気を可視化する、エアリティクス
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 # ✅ ロゴ画像の表示（TFMロゴ → メインロゴ）
 tfm_logo = Image.open("tokyofm_4c_small.jpg")
 st.image(tfm_logo, width=100)
 
 logo = Image.open("AIrlytics.png")
 st.image(logo, use_container_width=True)
-
-# ✅ キャッチコピーを表示
-st.markdown(
-    """
-    <div style='text-align: center; color: #3399cc; font-family: Meiryo, sans-serif; font-size: 20pt;'>
-        ラジオの空気を可視化する、エアリティクス
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
 # ✅ CSS（フォント拡大＋背景色など）
 st.markdown("""
