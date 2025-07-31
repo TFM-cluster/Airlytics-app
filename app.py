@@ -58,12 +58,26 @@ if missing_cols:
     st.error(f"❌ エラー：CSVに以下の列がありません → {missing_cols}")
     st.stop()
 
-# ✅ 入力UI
+# ✅ 曜日と時間帯の入力UI
 st.markdown("### 🔍 曜日と時間帯を選択してください")
-weekday = st.selectbox("曜日を選んでください", df["曜日"].unique(), index=df["曜日"].unique().tolist().index("月"))
+
+# ✅ トグル形式の複数曜日選択UI
+day_labels = ["月", "火", "水", "木", "金", "土", "日"]
+cols = st.columns(len(day_labels))
+selected_days = []
+for i, label in enumerate(day_labels):
+    if cols[i].toggle(label, key=f"toggle_{label}"):
+        selected_days.append(label)
+
+if not selected_days:
+    st.warning("⚠️ 曜日を1つ以上選択してください。")
+    st.stop()
+
+# ✅ 時間帯スライダー
 hour = st.slider("時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
 
-# ✅ クラスター情報の定義
+# ✅ クラスター情報の定義（省略せずそのまま）
+
 cluster_info = {
     1: {
         "text": "クラスタ1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
@@ -137,23 +151,12 @@ cluster_info = {
     }
 }
 
-# ✅ 複数選択を含む曜日リストを定義
-weekday_options = ["月", "火", "水", "木", "金", "土", "日", "月〜木", "月〜金"]
-
-# ✅ 選択に応じた曜日フィルタ設定
-if weekday == "月〜木":
-    selected_days = ["月", "火", "水", "木"]
-elif weekday == "月〜金":
-    selected_days = ["月", "火", "水", "木", "金"]
-else:
-    selected_days = [weekday]
-
-# ✅ 該当クラスタ検索（複数日の対応）
+# ✅ 該当クラスタ検索
 match = df[(df["曜日"].isin(selected_days)) & (df["開始時"] == hour)]
 
 if not match.empty:
     cluster = int(match.iloc[0]["推定クラスタ"])
-    st.success(f"✅ {weekday}曜 {hour}時台 は『クラスター {cluster}』です")
+    st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
 
     # ✅ クラスター詳細を表示
     info = cluster_info.get(cluster)
@@ -167,11 +170,11 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ 同じクラスタの他時間帯表示（月曜始まりでソート）
+    # ✅ 同じクラスターの他時間帯表示（月曜始まりでソート）
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
 
-    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"] == weekday) & (df["開始時"] == hour))]
+    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
     if not others.empty:
         st.markdown("📍 同じクラスターの他の時間帯（曜日順）：")
         others_sorted = others.sort_values(by=["曜日", "開始時"])
