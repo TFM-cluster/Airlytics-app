@@ -10,6 +10,21 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# ✅ CSS（フォント拡大＋背景色など）
+st.markdown("""
+    <style>
+    html, body, [class*="css"]  {
+        font-size: 12px !important;
+        background-color: #f9f9f9;
+        min-height: 2000px;
+    }
+    .stButton>button {
+        background-color: #4CAF50;
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # ✅ TOKYO FM ロゴの表示
 tfm_logo = Image.open("tokyofm_4c_small.jpg")
 st.image(tfm_logo, width=100)
@@ -29,20 +44,6 @@ st.markdown(
 logo = Image.open("AIrlytics.png")
 st.image(logo, use_container_width=True)
 
-# ✅ CSS（フォント拡大＋背景色など）
-st.markdown("""
-    <style>
-    html, body, [class*="css"]  {
-        font-size: 12px !important;
-        background-color: #f9f9f9;
-    }
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 # ✅ CSV読み込み関数（キャッシュ）
 @st.cache_data
 def load_data():
@@ -61,101 +62,38 @@ if missing_cols:
 # ✅ 曜日と時間帯の入力UI
 st.markdown("### 🔍 曜日と時間帯を選択してください")
 
-# ✅ トグル形式の複数曜日選択UI（2段構成）
+# ✅ 曜日選択（トグルから multiselect に変更）
 day_labels = ["月", "火", "水", "木", "金", "土", "日"]
-selected_days = []
-
-# 1段目（前半4日）
-cols1 = st.columns(4)
-for i, label in enumerate(day_labels[:4]):
-    if cols1[i].toggle(label, key=f"toggle_{label}"):
-        selected_days.append(label)
-
-# 2段目（後半3日）
-cols2 = st.columns(3)
-for i, label in enumerate(day_labels[4:]):
-    if cols2[i].toggle(label, key=f"toggle_{label}"):
-        selected_days.append(label)
+selected_days = st.multiselect("📅 曜日を選んでください（複数選択可）", options=day_labels, default=["月"])
 
 if not selected_days:
     st.warning("⚠️ 曜日を1つ以上選択してください。")
     st.stop()
 
 # ✅ 時間帯スライダー
-hour = st.slider("時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
+hour = st.slider("🕒 時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
 
-# ✅ クラスター情報の定義（省略せず全て含める）
+# ✅ クラスター情報の定義
 cluster_info = {
-    1: {
-        "text": "クラスタ1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
+    1: {"text": "クラスタ1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
                 "性別：男性56%、女性43%で半々。\n"
                 "年代：50代～60代で43%→次に40代。\n"
                 "職業：会社員と専門職（自由業）が多く、安定層。\n"
                 "地域：東京都中心（47%）→次点で神奈川県\n"
                 "聴取時間傾向：平日：8時~9時台、22時台／土日：7時~9時台、夜の23時にピーク",
-        "img": "cluster_1.png"
-    },
-    2: {
-        "text": "クラスタ2：男性若年層中心、平日朝と土曜夜に集中聴取\n"
+         "img": "cluster_1.png"},
+    2: {"text": "クラスタ2：男性若年層中心、平日朝と土曜夜に集中聴取\n"
                 "性別：男性84%。\n"
                 "年代：20代～30代が多数派。\n"
                 "職業：会社員中心、大学生・専門職も少数いる。\n"
                 "地域：東京都が3割、神奈川県と千葉県もバランスよくいる\n"
-                "聴取時間傾向：平日：7～9時台の出勤時間／土曜：20時～23時に突出",
-        "img": "cluster_2.png"
-    },
-    3: {
-        "text": "クラスタ3：20代男性会社員、昼夜問わずアクティブ聴取。情報収集やエンタメに積極的な若手社会人・学生。\n"
-                "移動中や休憩時間を中心に聴取、ネットやSNSとの親和性が強い層。\n"
-                "性別：男性84%。\n"
-                "年代：20代～30代が多数。\n"
-                "職業：会社員中心、大学生、専門職も少数いる。\n"
-                "地域：東京都と埼玉県\n"
-                "聴取時間傾向：平日：11時～13時前後、18時台／土日：11時～13時前後、18時台",
-        "img": "cluster_3.png"
-    },
-    4: {
-        "text": "クラスタ4：圧倒的女性、主婦・中高齢層の平日昼間リスナー\n"
-                "中高齢女性の専業主婦層。\n"
-                "家事や昼休憩時に聴く「生活情報」「懐かしい音楽」。\n"
-                "テレビと同時聴取の可能性。\n"
-                "性別：女性93%。\n"
-                "年代：50代（47%）→60代（48%）。\n"
-                "職業：専業主婦が多い。\n"
-                "地域：神奈川県が最多。次点で東京都。\n"
-                "聴取時間傾向：平日：昼12時～15時に集中／土日：あまりない",
-        "img": "cluster_4.png"
-    },
-    5: {
-        "text": "クラスタ5：40代前後の男性中心、夕方～夜にかけて聴取\n"
-                "仕事帰りや夜に趣味としてラジオ聴取するミドル層\n"
-                "音楽、トークバラエティ好き。\n"
-                "10代（中学生で3割）もいるクラスタ。\n"
-                "性別：男性70%。\n"
-                "年代：30～40代が多数、10代も3割いる。\n"
-                "職業：会社員が多い、中学生31.3%、高校生2.3%。\n"
-                "地域：東京都と神奈川県に集中（65%以上）。\n"
-                "聴取時間傾向：平日：16時～18時／土日：土曜日は18時～21時に集中、日曜は夜20時がピーク",
-        "img": "cluster_5.png"
-    },
-    6: {
-        "text": "クラスタ6：女性若年層、深夜型ユーザー、若い女性の夜更かしリスナー。\n"
-                "性別：女性99%。\n"
-                "年代：20代が最多（34%）→30代、40代の順。\n"
-                "職業：販売、サービス業や専門職が目立つ。\n"
-                "地域：東京都、神奈川県に多い\n"
-                "聴取時間傾向：平日：深夜23時台が突出／土日：夜20時～24時台がピーク",
-        "img": "cluster_6.png"
-    },
-    7: {
-        "text": "クラスタ7：都内在住の男性中高年層、朝型で週末に集中、週末の朝にラジオを聴く。\n"
-                "性別：男性95%。\n"
-                "年代：40代～50代中心、60代も一定数存在。\n"
-                "職業：会社員、技術職・製造業系。\n"
-                "地域：東京都が高め\n"
-                "聴取時間傾向：平日：8時~9時台、夕方／土日：日曜朝5時～9時が突出（40%）",
-        "img": "cluster_7.png"
-    }
+                "聴取時間傾向：平日：7～9時台／土曜：20～23時", 
+         "img": "cluster_2.png"},
+    3: {"text": "クラスタ3：20代男性会社員、昼夜問わずアクティブ聴取…", "img": "cluster_3.png"},
+    4: {"text": "クラスタ4：圧倒的女性、主婦・中高齢層の平日昼間リスナー…", "img": "cluster_4.png"},
+    5: {"text": "クラスタ5：40代前後の男性中心、夕方～夜にかけて聴取…", "img": "cluster_5.png"},
+    6: {"text": "クラスタ6：女性若年層、深夜型ユーザー…", "img": "cluster_6.png"},
+    7: {"text": "クラスタ7：都内在住の男性中高年層、朝型で週末に集中…", "img": "cluster_7.png"},
 }
 
 # ✅ 該当クラスタ検索
@@ -170,14 +108,13 @@ if not match.empty:
     if info:
         st.markdown(f"### 💡 クラスター{cluster}とは？")
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
-
         try:
             cluster_img = Image.open(info["img"])
             st.image(cluster_img, caption=f"クラスタ{cluster}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ 同じクラスターの他時間帯表示（月曜始まりでソート）
+    # ✅ 同じクラスタの他時間帯表示（月曜始まりでソート）
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
 
