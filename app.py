@@ -44,11 +44,11 @@ st.markdown(
 logo = Image.open("AIrlytics.png")
 st.image(logo, use_container_width=True)
 
-# ✅ 説明文の追加（ロゴ直下）
+# ✅ ロゴ下の説明文（小さめのフォントに調整）
 st.markdown(
     """
     <div style='text-align: center; font-family: Meiryo, sans-serif;
-                font-size: 13pt; margin-top: -10px; margin-bottom: 25px; line-height: 1.8; color: #333;'>
+                font-size: 11pt; margin-top: -5px; margin-bottom: 20px; line-height: 1.6; color: #333;'>
         AIrlyticsは、ラジオの聴取行動を可視化し、<br>
         クラスタごとの特徴を分析するインサイトツールです。<br>
         2024年度の聴取率調査（2024年4月～2025年2月の計6回）を基に7つのクラスタを作成し、<br>
