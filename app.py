@@ -137,8 +137,22 @@ cluster_info = {
     }
 }
 
-# ✅ 該当クラスタ検索
-match = df[(df["曜日"] == weekday) & (df["開始時"] == hour)]
+# ✅ 複数選択を含む曜日リストを定義
+weekday_options = ["月", "火", "水", "木", "金", "土", "日", "月〜木", "月〜金"]
+
+# ✅ UI（曜日選択）
+weekday = st.selectbox("曜日を選んでください", weekday_options, index=weekday_options.index("月"))
+
+# ✅ 選択に応じた曜日フィルタ設定
+if weekday == "月〜木":
+    selected_days = ["月", "火", "水", "木"]
+elif weekday == "月〜金":
+    selected_days = ["月", "火", "水", "木", "金"]
+else:
+    selected_days = [weekday]
+
+# ✅ 該当クラスタ検索（複数日の対応）
+match = df[(df["曜日"].isin(selected_days)) & (df["開始時"] == hour)]
 
 if not match.empty:
     cluster = int(match.iloc[0]["推定クラスタ"])
