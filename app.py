@@ -61,12 +61,20 @@ if missing_cols:
 # ✅ 曜日と時間帯の入力UI
 st.markdown("### 🔍 曜日と時間帯を選択してください")
 
-# ✅ トグル形式の複数曜日選択UI
+# ✅ トグル形式の複数曜日選択UI（2段構成）
 day_labels = ["月", "火", "水", "木", "金", "土", "日"]
-cols = st.columns(len(day_labels))
 selected_days = []
-for i, label in enumerate(day_labels):
-    if cols[i].toggle(label, key=f"toggle_{label}"):
+
+# 1段目（前半4日）
+cols1 = st.columns(4)
+for i, label in enumerate(day_labels[:4]):
+    if cols1[i].toggle(label, key=f"toggle_{label}"):
+        selected_days.append(label)
+
+# 2段目（後半3日）
+cols2 = st.columns(3)
+for i, label in enumerate(day_labels[4:]):
+    if cols2[i].toggle(label, key=f"toggle_{label}"):
         selected_days.append(label)
 
 if not selected_days:
@@ -76,8 +84,7 @@ if not selected_days:
 # ✅ 時間帯スライダー
 hour = st.slider("時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
 
-# ✅ クラスター情報の定義（省略せずそのまま）
-
+# ✅ クラスター情報の定義（省略せず全て含める）
 cluster_info = {
     1: {
         "text": "クラスタ1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
