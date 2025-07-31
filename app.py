@@ -17,9 +17,13 @@ st.image(tfm_logo, width=100)
 logo = Image.open("AIrlytics.png")
 st.image(logo, use_container_width=True)
 
-# ✅ キャッチコピーの追加（ここ！）
+# ✅ キャッチコピーを表示
 st.markdown(
-    "<h5 style='text-align: center; color: #555;'>ラジオの空気を可視化する、エアリティクス</h5>",
+    """
+    <div style='text-align: center; color: #3399cc; font-family: Meiryo, sans-serif; font-size: 20pt;'>
+        ラジオの空気を可視化する、エアリティクス
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
