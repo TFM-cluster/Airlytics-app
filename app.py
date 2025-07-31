@@ -167,4 +167,4 @@ if not match.empty:
         for _, row in others_sorted.iterrows():
             st.markdown(f"- {row['曜日']} {row['開始時']}時台")
 else:
-    st.warning("⚠️ 該当するクラスタが見つかりませんでした。")このコードをなおして全体をください
+    st.warning("⚠️ 該当するクラスタが見つかりませんでした。")
