@@ -140,9 +140,6 @@ cluster_info = {
 # ✅ 複数選択を含む曜日リストを定義
 weekday_options = ["月", "火", "水", "木", "金", "土", "日", "月〜木", "月〜金"]
 
-# ✅ UI（曜日選択）
-weekday = st.selectbox("曜日を選んでください", weekday_options, index=weekday_options.index("月"))
-
 # ✅ 選択に応じた曜日フィルタ設定
 if weekday == "月〜木":
     selected_days = ["月", "火", "水", "木"]
