@@ -173,18 +173,44 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ マトリクス形式表示
-    weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
-    df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
-    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
-    if not others.empty:
-        pivot_data = others[["曜日", "開始時"]].drop_duplicates()
-        pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
-        for _, row in pivot_data.iterrows():
-            pivot_table.loc[row["曜日"], row["開始時"]] = "✅"
-        pivot_table.fillna("", inplace=True)
-        pivot_table.columns = [f"{h}時台" for h in pivot_table.columns]
-        st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
-        st.dataframe(pivot_table, use_container_width=True)
+   # ✅ マトリクス表示 ①
+st.markdown("### 📊 曜日 × 時間帯 クラスター一覧")
+day_labels = ["月", "火", "水", "木", "金", "土", "日"]
+hours = list(range(5, 30))  # 5時～29時
+
+# (曜日, 開始時) をキーとしてクラスタIDを保持
+cluster_map = {
+    (row["\u66dc\u65e5"], int(row["\u958b始時"])): int(row["\u63a8\u5b9a\u30af\u30e9\u30b9\u30bf"])
+    for _, row in df.iterrows()
+}
+
+for h in hours:
+    cols = st.columns(len(day_labels))
+    for i, day in enumerate(day_labels):
+        cluster_id = cluster_map.get((day, h), None)
+        if cluster_id:
+            html = f"<a href='#cluster{cluster_id}' style='text-decoration:none; color:#3399cc;'>クラスタ{cluster_id}</a>"
+        else:
+            html = "<span style='color:#cccccc;'>－</span>"
+        cols[i].markdown(html, unsafe_allow_html=True)
+
+# ✅ 曜日と時間帯を選択
+st.markdown("### 🔍 曜日と時間帯を選択してください")
+selected_days = st.multiselect("🗕 曜日を選んでください（複数選択可）", options=day_labels, default=["\u6708"])
+if not selected_days:
+    st.warning("⚠️ 曜日を1つ以上選択してください。")
+    st.stop()
+
+hour = st.slider("🕒 時間を選んでください（24h形式，5～29）", min_value=5, max_value=29, value=9)
+
+# ✅ 該当クラスタ表示
+match = df[(df["\u66dc\u65e5"].isin(selected_days)) & (df["\u958b\u59cb\u6642"] == hour)]
+if not match.empty:
+    cluster = int(match.iloc[0]["\u63a8\u5b9a\u30af\u30e9\u30b9\u30bf"])
+    st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
+
+# ✅ クラスタ説明
+    st.markdown(f"<h4 id='cluster{cluster}'>🔎 クラスター{cluster}の説明</h4>", unsafe_allow_html=True)
+    st.markdown(f"<div style='white-space: pre-wrap;'>説明文はここに挿入</div>", unsafe_allow_html=True)
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
