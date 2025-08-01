@@ -42,9 +42,9 @@ st.markdown(
     <div style='text-align: center; font-family: Meiryo, sans-serif;
                 font-size: 10pt; margin-top: -5px; margin-bottom: 20px; line-height: 1.6; color: #333;'>
         AIrlyticsは、ラジオの聴取行動を可視化し、<br>
-        クラスタごとの特徴を分析するインサイトツールです。<br>
+        クラスターごとの特徴を分析するインサイトツールです。<br>
         2024年度の聴取率調査結果（2024年4月～2025年2月の計6回）<br>
-        を基に7つのクラスタを作成し、聴取時間に落とし込みました。<br>
+        を基に7つのクラスターを作成し、聴取時間に落とし込みました。<br>
         クラスタ作成に使用した特徴量は、<br>
         性別、年齢、職業、エリア、ドライバー比率、聴取時間です。
     </div>
@@ -60,7 +60,7 @@ def load_data():
 df = load_data()
 
 # ✅ 列名チェック
-expected_columns = ["曜日", "開始時", "推定クラスタ"]
+expected_columns = ["曜日", "開始時", "推定クラスター"]
 missing_cols = [col for col in expected_columns if col not in df.columns]
 
 if missing_cols:
@@ -84,7 +84,7 @@ hour = st.slider("🕒 時間を選んでください（24h形式、5〜29）", 
 # ✅ クラスター情報の定義
 cluster_info = {
     1: {
-        "text": "クラスタ1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
+        "text": "クラスター1：都内在住の働く中高年男女。通勤や夜のリラックスタイムにラジオを聴く。情報番組、ニュース、トーク番組を好む傾向。\n"
                 "性別：男性56%、女性43%で半々。\n"
                 "年代：50代～60代で43%→次に40代。\n"
                 "職業：会社員と専門職（自由業）が多く、安定層。\n"
@@ -93,7 +93,7 @@ cluster_info = {
         "img": "cluster_1.png"
     },
     2: {
-        "text": "クラスタ2：男性若年層中心、平日朝と土曜夜に集中聴取\n"
+        "text": "クラスター2：男性若年層中心、平日朝と土曜夜に集中聴取\n"
                 "性別：男性84%。\n"
                 "年代：20代～30代が多数派。\n"
                 "職業：会社員中心、大学生・専門職も少数いる。\n"
@@ -102,7 +102,7 @@ cluster_info = {
         "img": "cluster_2.png"
     },
     3: {
-        "text": "クラスタ3：20代男性会社員、昼夜問わずアクティブ聴取。情報収集やエンタメに積極的な若手社会人・学生。\n"
+        "text": "クラスター3：20代男性会社員、昼夜問わずアクティブ聴取。情報収集やエンタメに積極的な若手社会人・学生。\n"
                 "移動中や休憩時間を中心に聴取、ネットやSNSとの親和性が強い層。\n"
                 "性別：男性84%。\n"
                 "年代：20代～30代が多数。\n"
@@ -112,7 +112,7 @@ cluster_info = {
         "img": "cluster_3.png"
     },
     4: {
-        "text": "クラスタ4：圧倒的女性、主婦・中高齢層の平日昼間リスナー\n"
+        "text": "クラスター4：圧倒的女性、主婦・中高齢層の平日昼間リスナー\n"
                 "中高齢女性の専業主婦層。\n"
                 "家事や昼休憩時に聴く「生活情報」「懐かしい音楽」。\n"
                 "テレビと同時聴取の可能性。\n"
@@ -124,7 +124,7 @@ cluster_info = {
         "img": "cluster_4.png"
     },
     5: {
-        "text": "クラスタ5：40代前後の男性中心、夕方～夜にかけて聴取\n"
+        "text": "クラスター5：40代前後の男性中心、夕方～夜にかけて聴取\n"
                 "仕事帰りや夜に趣味としてラジオ聴取するミドル層\n"
                 "音楽、トークバラエティ好き。\n"
                 "10代（中学生で3割）もいるクラスタ。\n"
@@ -136,7 +136,7 @@ cluster_info = {
         "img": "cluster_5.png"
     },
     6: {
-        "text": "クラスタ6：女性若年層、深夜型ユーザー、若い女性の夜更かしリスナー。\n"
+        "text": "クラスター6：女性若年層、深夜型ユーザー、若い女性の夜更かしリスナー。\n"
                 "性別：女性99%。\n"
                 "年代：20代が最多（34%）→30代、40代の順。\n"
                 "職業：販売、サービス業や専門職が目立つ。\n"
@@ -145,7 +145,7 @@ cluster_info = {
         "img": "cluster_6.png"
     },
     7: {
-        "text": "クラスタ7：都内在住の男性中高年層、朝型で週末に集中、週末の朝にラジオを聴く。\n"
+        "text": "クラスター7：都内在住の男性中高年層、朝型で週末に集中、週末の朝にラジオを聴く。\n"
                 "性別：男性95%。\n"
                 "年代：40代～50代中心、60代も一定数存在。\n"
                 "職業：会社員、技術職・製造業系。\n"
@@ -155,11 +155,11 @@ cluster_info = {
     }
 }
 
-# ✅ 該当クラスタ検索
+# ✅ 該当クラスター検索
 match = df[(df["曜日"].isin(selected_days)) & (df["開始時"] == hour)]
 
 if not match.empty:
-    cluster = int(match.iloc[0]["推定クラスタ"])
+    cluster = int(match.iloc[0]["推定クラスター"])
     st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
 
     # ✅ クラスター詳細を表示
@@ -169,14 +169,14 @@ if not match.empty:
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
         try:
             cluster_img = Image.open(info["img"])
-            st.image(cluster_img, caption=f"クラスタ{cluster}のイメージ", width=300)
+            st.image(cluster_img, caption=f"クラスター{cluster}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
     # ✅ マトリクス形式表示
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
-    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
+    others = df[(df["推定クラスター"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
     if not others.empty:
         pivot_data = others[["曜日", "開始時"]].drop_duplicates()
         pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
@@ -187,4 +187,4 @@ if not match.empty:
         st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
         st.dataframe(pivot_table, use_container_width=True)
 else:
-    st.warning("⚠️ 該当するクラスタが見つかりませんでした。")
+    st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
