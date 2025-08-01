@@ -162,7 +162,7 @@ if not match.empty:
     cluster = int(match.iloc[0]["推定クラスタ"])
     st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
 
-    # ✅ クラスター詳細を表示
+    # ✅ クラスター詳細表示
     info = cluster_info.get(cluster)
     if info:
         st.markdown(f"### 💡 クラスター{cluster}とは？")
@@ -173,7 +173,7 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ マトリクス形式表示
+    # ✅ 同じクラスターの他の時間帯
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
     others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
@@ -181,10 +181,22 @@ if not match.empty:
         pivot_data = others[["曜日", "開始時"]].drop_duplicates()
         pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
         for _, row in pivot_data.iterrows():
-            pivot_table.loc[row["曜日"], row["開始時"]] = "✅"
-        pivot_table.fillna("", inplace=True)
+            pivot_table.loc[row["曜日"], row["開始時"]] = f"<a href='#cluster{cluster}'>クラスタ{cluster}</a>"
+        pivot_table.fillna("<span style='color:#cccccc;'>－</span>", inplace=True)
         pivot_table.columns = [f"{h}時台" for h in pivot_table.columns]
+
         st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
-        st.dataframe(pivot_table, use_container_width=True)
+        st.write("HTMLリンク表示")
+        with st.container():
+            st.markdown("<style>table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 4px; text-align: center; }</style>", unsafe_allow_html=True)
+            html_table = "<table><tr><th></th>" + "".join([f"<th>{h}時</th>" for h in range(5, 30)]) + "</tr>"
+            for day in weekday_order:
+                html_table += f"<tr><td>{day}</td>"
+                for h in range(5, 30):
+                    val = pivot_table.loc[day, h]
+                    html_table += f"<td>{val}</td>"
+                html_table += "</tr>"
+            html_table += "</table>"
+            st.markdown(html_table, unsafe_allow_html=True)
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
