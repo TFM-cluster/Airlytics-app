@@ -60,7 +60,7 @@ def load_data():
 df = load_data()
 
 # ✅ 列名チェック
-expected_columns = ["曜日", "開始時", "推定クラスター"]
+expected_columns = ["曜日", "開始時", "推定クラスタ"]
 missing_cols = [col for col in expected_columns if col not in df.columns]
 
 if missing_cols:
