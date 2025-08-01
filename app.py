@@ -164,18 +164,66 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ マトリクス形式表示
+    # ✅ マトリクス表示
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
+    hour_range = list(range(5, 30))
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
-    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
-    if not others.empty:
-        pivot_data = others[["曜日", "開始時"]].drop_duplicates()
-        pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
-        for _, row in pivot_data.iterrows():
-            pivot_table.loc[row["曜日"], row["開始時"]] = "✅"
-        pivot_table.fillna("", inplace=True)
-        pivot_table.columns = [f"{h}時台" for h in pivot_table.columns]
-        st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
-        st.dataframe(pivot_table, use_container_width=True)
+
+    same_cluster_df = df[(df["推定クラスタ"] == cluster)]
+    other_cluster_df = df[(df["推定クラスタ"] != cluster)]
+
+    matrix_html = """
+    <style>
+    .table-matrix {
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .table-matrix th, .table-matrix td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 5px;
+    }
+    .cluster-btn {
+        background-color: #eee;
+        border: none;
+        padding: 3px 6px;
+        font-size: 0.9em;
+        color: #555;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    .check-icon {
+        font-size: 1.1em;
+        color: green;
+    }
+    </style>
+    <table class="table-matrix">
+        <tr>
+            <th></th>
+    """
+
+    for h in hour_range:
+        matrix_html += f"<th>{h}時台</th>"
+    matrix_html += "</tr>"
+
+    for day in weekday_order:
+        matrix_html += f"<tr><td>{day}</td>"
+        for h in hour_range:
+            subset = df[(df["曜日"] == day) & (df["開始時"] == h)]
+            if not subset.empty:
+                if not same_cluster_df[(same_cluster_df["曜日"] == day) & (same_cluster_df["開始時"] == h)].empty:
+                    matrix_html += "<td><span class='check-icon'>✅</span></td>"
+                else:
+                    other_c = int(subset.iloc[0]["推定クラスタ"])
+                    matrix_html += f"<td><a href='#cluster{other_c}'><button class='cluster-btn'>{other_c}</button></a></td>"
+            else:
+                matrix_html += "<td></td>"
+        matrix_html += "</tr>"
+    matrix_html += "</table>"
+
+    st.markdown("### 📌 同じクラスターの他の時間帯 (曜日×時間帯)")
+    st.markdown(matrix_html, unsafe_allow_html=True)
+
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
+
