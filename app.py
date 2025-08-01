@@ -173,25 +173,18 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-# ✅ 同じクラスターの他時間帯をマトリクス形式で表示
-import numpy as np
-
-# 曜日と時間帯でpivotテーブルを作成
-pivot_data = others[["曜日", "開始時"]].drop_duplicates()
-pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
-
-for _, row in pivot_data.iterrows():
-    day = row["曜日"]
-    hour = int(row["開始時"])
-    pivot_table.loc[day, hour] = "✅"
-
-# 欠損を空文字に変換（見た目改善）
-pivot_table.fillna("", inplace=True)
-
-# 表示用に列名を "5時台", "6時台", … と変換
-pivot_table.columns = [f"{h}時台" for h in pivot_table.columns]
-
-st.markdown("### 📍 同じクラスターの他の時間帯（曜日×時間帯）")
-st.dataframe(pivot_table, use_container_width=True)
+    # ✅ マトリクス形式表示
+    weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
+    df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
+    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
+    if not others.empty:
+        pivot_data = others[["曜日", "開始時"]].drop_duplicates()
+        pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
+        for _, row in pivot_data.iterrows():
+            pivot_table.loc[row["曜日"], row["開始時"]] = "✅"
+        pivot_table.fillna("", inplace=True)
+        pivot_table.columns = [f"{h}時台" for h in pivot_table.columns]
+        st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
+        st.dataframe(pivot_table, use_container_width=True)
 else:
     st.warning("⚠️ 該当するクラスタが見つかりませんでした。")
