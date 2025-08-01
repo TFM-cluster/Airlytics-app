@@ -222,6 +222,7 @@ if not match.empty:
     matrix_html += "</table>"
 
     st.markdown("### 📌 同じクラスターの他の時間帯 (曜日×時間帯)")
+    st.markdown("🔽 クラスター番号をクリックすると、このページの下部にその説明が表示されます。")
     st.markdown(matrix_html, unsafe_allow_html=True)
 
 else:
