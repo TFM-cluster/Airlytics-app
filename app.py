@@ -187,4 +187,4 @@ if not match.empty:
         st.markdown("### 📌 同じクラスターの他の時間帯（曜日×時間帯）")
         st.dataframe(pivot_table, use_container_width=True)
 else:
-    st.warning("⚠️ 該当するクラスターが見つかりませんでした。")この中の該当部分を修正し、全コードください
+    st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
