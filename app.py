@@ -176,7 +176,7 @@ if not match.empty:
     # ✅ マトリクス形式表示
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
-    others = df[(df["推定クラスター"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
+    others = df[(df["推定クラスタ"] == cluster) & ~((df["曜日"].isin(selected_days)) & (df["開始時"] == hour))]
     if not others.empty:
         pivot_data = others[["曜日", "開始時"]].drop_duplicates()
         pivot_table = pd.DataFrame(index=weekday_order, columns=range(5, 30))
