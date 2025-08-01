@@ -165,95 +165,24 @@ if not match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-    # ✅ マトリクス表示
-    weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
+      # ✅ マトリクス
     hour_range = list(range(5, 30))
-    df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
+    st.markdown("### 📌 同じクラスターの他の時間帯")
 
-    same_cluster_df = df[(df["推定クラスタ"] == cluster)]
-
-    matrix_html = """
-    <style>
-    .table-matrix {
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-    .table-matrix th, .table-matrix td {
-        border: 1px solid #ddd;
-        text-align: center;
-        padding: 5px;
-    }
-    .cluster-btn {
-        background-color: #eee;
-        border: none;
-        padding: 3px 6px;
-        font-size: 0.9em;
-        color: #555;
-        cursor: pointer;
-        text-decoration: underline;
-    }
-    .check-icon {
-        font-size: 1.1em;
-        color: green;
-    }
-    </style>
-    <table class="table-matrix">
-        <tr>
-            <th></th>
-    """
-
-    for h in hour_range:
-        matrix_html += f"<th>{h}時台</th>"
-    matrix_html += "</tr>"
-
-    for day in weekday_order:
-        matrix_html += f"<tr><td>{day}</td>"
-        for h in hour_range:
+    for day in day_labels:
+        cols = st.columns(len(hour_range) + 1)
+        cols[0].markdown(f"**{day}**")
+        for i, h in enumerate(hour_range):
             subset = df[(df["曜日"] == day) & (df["開始時"] == h)]
             if not subset.empty:
                 c_id = int(subset.iloc[0]["推定クラスタ"])
                 if c_id == cluster:
-                    matrix_html += "<td><span class='check-icon'>✅</span></td>"
+                    cols[i + 1].markdown("✅")
                 else:
-                    matrix_html += f"<td><a href='#cluster{c_id}'><button class='cluster-btn'>{c_id}</button></a></td>"
+                    if cols[i + 1].button(f"{c_id}", key=f"btn_{day}_{h}"):
+                        st.session_state.selected_cluster = c_id
+                        st.experimental_rerun()
             else:
-                matrix_html += "<td></td>"
-        matrix_html += "</tr>"
-    matrix_html += "</table>"
-
-   # ✅ マトリクス表示（Streamlitネイティブ方式）
-st.markdown("### 📌 同じクラスターの他の時間帯 (曜日×時間帯)")
-st.markdown("🔽 クラスター番号をクリックすると、このページの下部にその説明が表示されます。")
-
-weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
-hour_range = list(range(5, 30))
-df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
-same_cluster_df = df[(df["推定クラスタ"] == cluster)]
-
-for day in weekday_order:
-    cols = st.columns(len(hour_range) + 1)
-    cols[0].markdown(f"**{day}**")
-    for i, h in enumerate(hour_range):
-        subset = df[(df["曜日"] == day) & (df["開始時"] == h)]
-        if not subset.empty:
-            c_id = int(subset.iloc[0]["推定クラスタ"])
-            if c_id == cluster:
-                cols[i + 1].markdown("<span style='font-size:20px; color:green;'>✅</span>", unsafe_allow_html=True)
-            else:
-                if cols[i + 1].button(f"{c_id}", key=f"btn_{day}_{h}"):
-                    st.session_state.selected_cluster = c_id
-                    st.experimental_rerun()
-        else:
-            cols[i + 1].markdown(" ")
-
-# ✅ 下部に選択されたクラスタの説明を表示
-if "selected_cluster" in st.session_state and st.session_state.selected_cluster:
-    cid = st.session_state.selected_cluster
-    info = cluster_info.get(cid)
-    st.markdown("---")
-    st.markdown(f"### 💡 クラスター{cid}とは？")
-    st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
-    try:
-        st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
-    except FileNotFoundError:
-        st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+                cols[i + 1].markdown("-")
+else:
+    st.warning("⚠️ 該当するクラスターが見つかりませんでした")
