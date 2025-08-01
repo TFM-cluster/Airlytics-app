@@ -156,6 +156,7 @@ if not match.empty:
     # ✅ クラスター詳細を表示
     info = cluster_info.get(cluster)
     if info:
+        st.markdown(f"<div id='cluster{cluster}'></div>", unsafe_allow_html=True)  # ←アンカー追加
         st.markdown(f"### 💡 クラスター{cluster}とは？")
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
         try:
@@ -170,7 +171,6 @@ if not match.empty:
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
 
     same_cluster_df = df[(df["推定クラスタ"] == cluster)]
-    other_cluster_df = df[(df["推定クラスタ"] != cluster)]
 
     matrix_html = """
     <style>
@@ -211,11 +211,11 @@ if not match.empty:
         for h in hour_range:
             subset = df[(df["曜日"] == day) & (df["開始時"] == h)]
             if not subset.empty:
-                if not same_cluster_df[(same_cluster_df["曜日"] == day) & (same_cluster_df["開始時"] == h)].empty:
+                c_id = int(subset.iloc[0]["推定クラスタ"])
+                if c_id == cluster:
                     matrix_html += "<td><span class='check-icon'>✅</span></td>"
                 else:
-                    other_c = int(subset.iloc[0]["推定クラスタ"])
-                    matrix_html += f"<td><a href='#cluster{other_c}'><button class='cluster-btn'>{other_c}</button></a></td>"
+                    matrix_html += f"<td><a href='#cluster{c_id}'><button class='cluster-btn'>{c_id}</button></a></td>"
             else:
                 matrix_html += "<td></td>"
         matrix_html += "</tr>"
@@ -226,4 +226,3 @@ if not match.empty:
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした。")
-
