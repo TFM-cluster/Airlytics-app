@@ -15,11 +15,11 @@ st.set_page_config(
 # ✅ スマホでピンチズームを許可
 st.markdown("""
     <style>
-    /* ユーザーズームを強制的に許可する */
-    @viewport {
-        width: device-width;
-        zoom: 1.0;
-        user-zoom: zoom;
+    html, body {
+        touch-action: manipulation;
+        -ms-touch-action: manipulation;
+        zoom: 1 !important;
+        overflow-x: hidden;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -145,6 +145,7 @@ for cid in sorted(cluster_info.keys()):
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
 
 
