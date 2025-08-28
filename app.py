@@ -131,13 +131,14 @@ st.markdown("### 🔎 全クラスター一覧")
 
 for cid in sorted(cluster_info.keys()):
     info = cluster_info[cid]
-    st.markdown(f"#### 🔸 クラスター{cid}")
-    st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
-    try:
-        st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
-    except FileNotFoundError:
-        st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+    with st.expander(f"クラスター{cid}の説明を見る"):
+        st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
+        try:
+            st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
+        except FileNotFoundError:
+            st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
