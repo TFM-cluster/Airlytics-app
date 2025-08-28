@@ -14,9 +14,14 @@ st.set_page_config(
 
 # ✅ スマホでピンチズームを許可
 st.markdown("""
-    <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    </head>
+    <style>
+    /* ユーザーズームを強制的に許可する */
+    @viewport {
+        width: device-width;
+        zoom: 1.0;
+        user-zoom: zoom;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
 # ✅ ロゴなど表示
@@ -140,5 +145,6 @@ for cid in sorted(cluster_info.keys()):
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
 
