@@ -12,6 +12,39 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# ✅ ② スマホズームを有効化し、全体の余白を最小化
+st.markdown("""
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <style>
+        html, body {
+            touch-action: auto;
+            -ms-touch-action: auto;
+            zoom: unset !important;
+            overflow-x: auto;
+        }
+
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        section.main > div {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        #cluster-matrix-end + div {
+            margin-top: -30px !important;
+        }
+
+        h2, h3, p {
+            margin-top: 0.2rem !important;
+            margin-bottom: 0.2rem !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # ✅ スマホでピンチズームを許可
 st.markdown("""
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -143,6 +176,7 @@ for cid in sorted(cluster_info.keys()):
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
 
 
