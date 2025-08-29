@@ -87,22 +87,6 @@ if not data_match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-# ✅ ロゴや説明文のあと、マトリクス表示前あたりで
-st.markdown("""
-<style>
-pre, code {
-    background-color: transparent !important;
-    color: #333 !important;
-    font-size: 1em;
-}
-.table-matrix {
-    margin-bottom: 10px !important;
-}
-h3, h2 {
-    margin-top: 10px !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 
     
@@ -159,6 +143,7 @@ for cid in sorted(cluster_info.keys()):
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
 
 
