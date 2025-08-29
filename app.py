@@ -16,14 +16,6 @@ st.set_page_config(
 st.markdown("""
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 
-    <style>
-    html, body {
-        touch-action: manipulation;
-        -ms-touch-action: manipulation;
-        zoom: 1 !important;
-        overflow-x: hidden;
-    }
-    </style>
 """, unsafe_allow_html=True)
 
 # ✅ ロゴなど表示
@@ -147,6 +139,7 @@ for cid in sorted(cluster_info.keys()):
 
 else:
     st.warning("⚠️ 該当するクラスターが見つかりませんでした")
+
 
 
 
