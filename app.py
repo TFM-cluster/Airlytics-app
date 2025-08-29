@@ -41,7 +41,7 @@ st.markdown("""
         AIrlyticsは、ラジオの聴取行動を可視化し、<br>
         クラスターごとの特徴を分析するインサイトツールです。<br>
         2024年度の聴取率調査結果（2024年4月～2025年2月の計6回）<br>
-        を基に7つのクラスターを作成し、聴取時間に落とし込みました。<br>
+        を基に7つのクラスターを作成し、<br>聴取時間に落とし込みました。<br>
         クラスター作成に使用した特徴量は、<br>
         性別、年齢、職業、エリア、ドライバー比率、聴取時間です。
     </div>
@@ -146,6 +146,7 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
 
 
 
