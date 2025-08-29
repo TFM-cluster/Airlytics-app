@@ -125,7 +125,7 @@ if not data_match.empty:
     st.markdown("""
     <div style='margin-bottom: 0px; font-size: 16pt; font-weight: bold; color: #333;'>📌 同じクラスターの他の時間帯 (曜日×時間帯)</div>
     """, unsafe_allow_html=True)
-    components.html(matrix_html, height=480, scrolling=True)
+    components.html(matrix_html, height=380, scrolling=True)
 
 # ✅ すべてのクラスターを表示
 st.markdown("""
@@ -140,3 +140,4 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
