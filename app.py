@@ -14,8 +14,10 @@ st.set_page_config(
 
 # ✅ AIrlyticsのアイコン（favicon）をスマホ対応としてHTMLで追加
 st.markdown("""
-    <link rel="apple-touch-icon" sizes="180x180" href="https://yourdomain.com/airlytics_icon.png">
-    <link rel="icon" type="image/png" href="https://yourdomain.com/airlytics_icon.png">
+<!-- 強制的にfaviconを設定する -->
+<link rel="icon" href="https://yourdomain.com/AIrlytics.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://yourdomain.com/AIrlytics.png">
+<link rel="manifest" href="/manifest.json">
 """, unsafe_allow_html=True)
 
 # ✅ スマホでピンチズームを許可
@@ -146,6 +148,7 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
 
 
 
