@@ -20,9 +20,11 @@ st.markdown("""
 <link rel="manifest" href="/manifest.json">
 """, unsafe_allow_html=True)
 
-# ✅ スマホでピンチズームを許可
+# ✅ ピンチズームを明示的に有効化（再強化）
 st.markdown("""
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+    </head>
 """, unsafe_allow_html=True)
 
 # ✅ ロゴなど表示
@@ -148,6 +150,7 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
 
 
 
