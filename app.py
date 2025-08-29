@@ -12,48 +12,15 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# ✅ ② スマホズームを有効化し、全体の余白を最小化
-st.markdown("""
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <style>
-        html, body {
-            touch-action: auto;
-            -ms-touch-action: auto;
-            zoom: unset !important;
-            overflow-x: auto;
-        }
-
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
-        section.main > div {
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
-        }
-
-        #cluster-matrix-end + div {
-            margin-top: -30px !important;
-        }
-
-        h2, h3, p {
-            margin-top: 0.2rem !important;
-            margin-bottom: 0.2rem !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-
 # ✅ スマホでピンチズームを許可
 st.markdown("""
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-
 """, unsafe_allow_html=True)
 
-# ✅ ロゴなど表示
+# ✅ ロゴ表示
 st.image(Image.open("tokyofm_4c_small.jpg"), width=100)
 
+# ✅ タイトル
 st.markdown("""
     <div style='text-align: center; color: #3399cc; font-family: Meiryo, sans-serif;
                 font-size: 21pt; font-weight: bold; margin-top: 10px; margin-bottom: -5px;'>
@@ -63,6 +30,7 @@ st.markdown("""
 
 st.image(Image.open("AIrlytics.png"), use_container_width=True)
 
+# ✅ 説明文
 st.markdown("""
     <div style='text-align: center; font-family: Meiryo, sans-serif; font-size: 10pt;
                 margin-top: -5px; margin-bottom: 20px; line-height: 1.6; color: #333;'>
@@ -82,7 +50,7 @@ def load_data():
 
 df = load_data()
 
-# ✅ 入力UI
+# ✅ 曜日と時間UI
 st.markdown("### 🔍 曜日と時間帯を選択してください")
 day_labels = ["月", "火", "水", "木", "金", "土", "日"]
 selected_days = st.multiselect("🗕️ 曜日を選んでください（複数選択可）", options=day_labels, default=["月"])
@@ -92,7 +60,7 @@ if not selected_days:
 
 hour = st.slider("🕒 時間を選んでください（24h形式、5〜29）", min_value=5, max_value=29, value=9)
 
-# ✅ クラスター辞書
+# ✅ クラスター情報
 cluster_info = {
     1: {"text": "クラスター1: 都内在住の働く中高年男女。\n通勤や夜のリラックスタイムにラジオを聴く。\n情報番組、ニュース、トーク番組を好む傾向。", "img": "cluster_1.png"},
     2: {"text": "クラスター2：男性若年層中心、平日朝と土曜夜に集中聴取\n性別：男性84%。\n年代：20代～30代が多数派。\n職業：会社員中心、大学生・専門職も少数いる。\n地域：東京都が3割、神奈川県と千葉県もバランスよくいる", "img": "cluster_2.png"},
@@ -103,13 +71,12 @@ cluster_info = {
     7: {"text": "クラスター7：週末朝に集中する都内在住の中高年男性。\n性別：男性95%。\n年代：40代〜60代。\n職業：会社員、技術職など。\n地域：東京都が多い。", "img": "cluster_7.png"},
 }
 
-# ✅ クラスター検索
+# ✅ 該当するクラスターを表示
 data_match = df[(df["曜日"].isin(selected_days)) & (df["開始時"] == hour)]
 if not data_match.empty:
     cluster = int(data_match.iloc[0]["推定クラスタ"])
     st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
 
-    # クラスター説明
     st.markdown(f"<div id='cluster{cluster}'></div>", unsafe_allow_html=True)
     st.markdown(f"### 💡 クラスター{cluster}とは？")
     info = cluster_info.get(cluster)
@@ -120,27 +87,43 @@ if not data_match.empty:
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
 
-
-
-    
-
-    # ✅ マトリクス生成
+    # ✅ マトリクス表
     weekday_order = ["月", "火", "水", "木", "金", "土", "日"]
     hour_range = list(range(5, 30))
     df["曜日"] = pd.Categorical(df["曜日"], categories=weekday_order, ordered=True)
 
     matrix_html = """
     <style>
-    .table-matrix { border-collapse: collapse; margin-top: 10px; }
-    .table-matrix th, .table-matrix td { border: 1px solid #ddd; text-align: center; padding: 5px; }
-    .cluster-btn { background-color: #eee; border: none; padding: 3px 6px; font-size: 0.9em; color: #555; cursor: pointer; text-decoration: underline; }
-    .check-icon { font-size: 1.1em; color: green; }
+    .table-matrix {
+        border-collapse: collapse;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .table-matrix th, .table-matrix td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 2px 4px;
+        font-size: 10pt;
+    }
+    .cluster-btn {
+        background-color: #eee;
+        border: none;
+        padding: 2px 4px;
+        font-size: 9pt;
+        color: #555;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    .check-icon {
+        font-size: 1em;
+        color: green;
+    }
     </style>
     <table class="table-matrix">
         <tr><th></th>
     """
     for h in hour_range:
-        matrix_html += f"<th>{h}時台</th>"
+        matrix_html += f"<th>{h}時</th>"
     matrix_html += "</tr>"
 
     for day in weekday_order:
@@ -160,12 +143,13 @@ if not data_match.empty:
         matrix_html += "</tr>"
     matrix_html += "</table>"
 
-    st.markdown("### 📌 同じクラスターの他の時間帯 (曜日×時間帯)")
-    components.html(matrix_html, height=800, scrolling=True)
-# ✅ すべてのクラスターを表示
-st.markdown("### 🔎 全クラスター一覧")
+    st.markdown("### 📌 他の時間帯でのクラスター出現")
+    components.html(matrix_html, height=650, scrolling=True)
 
+# ✅ 全クラスターを表示（ジャンプ対象）
+st.markdown("### 🔎 全クラスター一覧")
 for cid in sorted(cluster_info.keys()):
+    st.markdown(f"<div id='cluster{cid}'></div>", unsafe_allow_html=True)
     info = cluster_info[cid]
     with st.expander(f"クラスター{cid}の説明を見る"):
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
@@ -173,15 +157,3 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
-
-else:
-    st.warning("⚠️ 該当するクラスターが見つかりませんでした")
-
-
-
-
-
-
-
-
-
