@@ -67,7 +67,8 @@ def load_data():
 df = load_data()
 
 # ✅ 入力UI
-st.markdown("### 🔍 曜日と時間帯を選択してください")
+<div style='margin-bottom: 10px; font-size: 16pt; font-weight: bold; color: #333;'>🔍 曜日と時間帯を選択してください</div>
+""", unsafe_allow_html=True)
 day_labels = ["月", "火", "水", "木", "金", "土", "日"]
 selected_days = st.multiselect("🔕️ 曜日を選んでください（複数選択可）", options=day_labels, default=["月"])
 if not selected_days:
@@ -95,7 +96,9 @@ if not data_match.empty:
 
     # クラスター説明（IDジャンプ用）
     st.markdown(f"<div id='cluster{cluster}'></div>", unsafe_allow_html=True)
-    st.markdown(f"### 💡 クラスター{cluster}とは？")
+    st.markdown(f"""
+<div style='margin-top: 20px; font-size: 16pt; font-weight: bold; color: #333;'>💡 クラスター{cluster}とは？</div>
+""", unsafe_allow_html=True)
     info = cluster_info.get(cluster)
     if info:
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
@@ -158,6 +161,7 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
 
 
 
