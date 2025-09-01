@@ -81,7 +81,9 @@ if not data_match.empty:
     st.success(f"✅ {', '.join(selected_days)}曜 {hour}時台 は『クラスター {cluster}』です")
 
     st.markdown(f"<div id='cluster{cluster}'></div>", unsafe_allow_html=True)
-    st.markdown(f"### 💡 クラスター{cluster}とは？")
+    st.markdown(f"""
+<div style='margin-top: 20px; font-size: 16pt; font-weight: bold; color: #333;'>💡 クラスター{cluster}とは？</div>
+""", unsafe_allow_html=True)
     info = cluster_info.get(cluster)
     if info:
         st.markdown(f"<div style='white-space: pre-wrap;'>{info['text']}</div>", unsafe_allow_html=True)
@@ -144,4 +146,5 @@ for cid in sorted(cluster_info.keys()):
             st.image(Image.open(info["img"]), caption=f"クラスター{cid}のイメージ", width=300)
         except FileNotFoundError:
             st.warning(f"⚠️ 画像ファイル『{info['img']}』が見つかりません。")
+
 
